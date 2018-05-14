@@ -1,0 +1,3 @@
+interface IBehavior {
+    setBehavior() : void
+}
