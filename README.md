@@ -1,4 +1,4 @@
-# Cookie Moster Game
+# Cookie Monster Game
 
 ## Het project
 

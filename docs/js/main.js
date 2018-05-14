@@ -75,6 +75,10 @@ var Game = (function () {
     function Game() {
         this.enemies = [];
         this.cookies = [];
+        this.level = 0;
+        this.score = 0;
+        this.statusbar = document.getElementsByTagName("bar")[0];
+        this.textfield = document.getElementsByTagName("textfield")[0];
         this.player = new Player();
         this.enemies.push(new Enemy());
         this.enemies.push(new Enemy());
@@ -90,6 +94,7 @@ var Game = (function () {
             enemy.update();
             if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
                 this.player.randomPosition();
+                this.subtractLevel();
             }
         }
         for (var _b = 0, _c = this.cookies; _b < _c.length; _b++) {
@@ -101,10 +106,43 @@ var Game = (function () {
                 this.cookies.splice(i, 1);
                 cookie.element.remove();
                 this.cookies.push(new Cookie());
+                this.scorePoint();
             }
         }
         this.player.update();
         requestAnimationFrame(function () { return _this.gameLoop(); });
+    };
+    Game.prototype.subtractLevel = function () {
+        var $this = this;
+        this.level++;
+        switch (this.level) {
+            case 1:
+                this.statusbar.style.backgroundPositionX = "-72px";
+                break;
+            case 2:
+                this.statusbar.style.backgroundPositionX = "-144px";
+                break;
+            case 3:
+                this.statusbar.style.backgroundPositionX = "-216px";
+                break;
+            case 4:
+                this.statusbar.style.backgroundPositionX = "-288px";
+                setTimeout(function () {
+                    $this.statusbar.style.backgroundPositionX = "0px";
+                    alert("Game Over");
+                    $this.reset();
+                }, 300);
+                break;
+        }
+    };
+    Game.prototype.scorePoint = function () {
+        this.score++;
+        this.textfield.innerHTML = "Score: " + this.score;
+    };
+    Game.prototype.reset = function () {
+        this.level = 0;
+        this.score = 0;
+        this.textfield.innerHTML = "Score: " + this.score;
     };
     return Game;
 }());

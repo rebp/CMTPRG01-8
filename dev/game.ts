@@ -1,11 +1,20 @@
 class Game {
 
     private enemies: Enemy[] = []
+    private cookies: Cookie[] = []
     private player: Player
 
-    private cookies: Cookie[] = []
+    private statusbar:HTMLElement
+    private textfield:HTMLElement
+
+    private level:number = 0
+    private score:number = 0
+    
     
     constructor() {
+
+        this.statusbar = document.getElementsByTagName("bar")[0] as HTMLElement
+        this.textfield = document.getElementsByTagName("textfield")[0] as HTMLElement
 
         this.player = new Player()
         this.enemies.push(new Enemy())
@@ -24,6 +33,7 @@ class Game {
 
             if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
                 this.player.randomPosition()
+                this.subtractLevel()
             }
         }
 
@@ -37,6 +47,8 @@ class Game {
                 cookie.element.remove()
                 this.cookies.push(new Cookie())
 
+                this.scorePoint()
+
             }            
 
         }
@@ -44,6 +56,47 @@ class Game {
 
         requestAnimationFrame(() => this.gameLoop())
     }
+
+    public subtractLevel(){
+
+        const $this = this
+        this.level ++
+
+        switch (this.level) {
+            case 1:
+                this.statusbar.style.backgroundPositionX = "-72px"
+                break;
+            case 2:
+                this.statusbar.style.backgroundPositionX = "-144px"
+                break;
+            case 3:
+            this.statusbar.style.backgroundPositionX = "-216px"
+                break;
+            case 4:
+                this.statusbar.style.backgroundPositionX = "-288px"               
+                setTimeout(function(){
+                    $this.statusbar.style.backgroundPositionX = "0px" 
+                    alert("Game Over") 
+                    $this.reset() 
+                }, 300)        
+                break;
+
+        }
+        
+    }
+
+    public scorePoint() {
+        this.score ++
+        this.textfield.innerHTML = "Score: " + this.score 
+    }
+
+    public reset() {
+        this.level = 0
+        this.score = 0
+        this.textfield.innerHTML = "Score: " + this.score 
+    }
+
+    
 
 }
 
