@@ -4,6 +4,8 @@ class Game {
     private cookies: Cookie[] = []
     private player: Player
 
+    private upgrades: CookiesAndMilk[] = []
+
     private statusbar:HTMLElement
     private textfield:HTMLElement
 
@@ -17,25 +19,34 @@ class Game {
         this.textfield = document.getElementsByTagName("textfield")[0] as HTMLElement
 
         this.player = new Player()
-        this.enemies.push(new Enemy())
-        this.enemies.push(new Enemy())
-        this.enemies.push(new Enemy())
-        this.enemies.push(new Enemy())
-        this.cookies.push(new Cookie())
+        this.enemies.push(new Enemy(), new Enemy())
+        this.cookies.push(new Cookie())        
+        this.upgrades.push(new CookiesAndMilk())
 
         this.gameLoop()
     }
 
     gameLoop() {
 
+        let $this = this
+
         for(const enemy of this.enemies ) {
             enemy.update()
 
-            if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
-                this.player.randomPosition()
-                this.subtractLevel()
-            }
-        }
+                if($this.player.getAttackState()) {
+
+                } else {
+                    if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
+                        this.player.randomPosition()
+                        this.player.element.className = 'flicker'
+                        setTimeout(function(){
+                            $this.player.element.classList.remove('flicker')
+                        }, 500)
+                        this.subtractLevel()
+                    }
+                }
+
+          }
 
         for (const cookie of this.cookies) {
             cookie.update()
@@ -47,13 +58,57 @@ class Game {
                 cookie.element.remove()
                 this.cookies.push(new Cookie())
 
-                this.scorePoint()
+                this.score ++
+                this.textfield.innerHTML = "Score: " + this.score 
+            }
+            
+            for(const enemy of this.enemies ) {
+                if(Util.checkCollision(enemy.getBoundingClientRect(), cookie.getBoundingClientRect())){
+                    let c = this.cookies[0]
+                    let i = this.cookies.indexOf(c)
+                    this.cookies.splice(i, 1)
+                    cookie.element.remove()
+                    this.cookies.push(new Cookie())
 
-            }            
+                    this.score --
+                    if(this.score < 1) {
+                        this.score = 0
+                    }                    
+                    this.textfield.innerHTML = "Score: " + this.score 
+                }
+            }
 
         }
-        this.player.update()
 
+        for(const upgrade of this.upgrades) {
+
+            if($this.score < 3) {
+                upgrade.element.className = 'hide'
+            } else {
+                upgrade.element.className = 'show'
+
+                if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
+                    let c = this.upgrades[0]
+                    let i = this.upgrades.indexOf(c)
+                    this.upgrades.splice(i, 1)
+                    upgrade.element.remove()
+                    $this.player.setAttackState(true)
+                    $this.player.setAccelerator(10)
+                    $this.player.element.className = 'flicker'
+                    setTimeout(() => { 
+                        $this.player.setAttackState(false)
+                        $this.player.setAccelerator(5)
+                        $this.player.element.classList.remove('flicker') 
+                    }, 7500)
+                }
+            }
+
+
+
+            upgrade.update()
+        }
+
+        this.player.update()
         requestAnimationFrame(() => this.gameLoop())
     }
 
@@ -76,7 +131,7 @@ class Game {
                 this.statusbar.style.backgroundPositionX = "-288px"               
                 setTimeout(function(){
                     $this.statusbar.style.backgroundPositionX = "0px" 
-                    alert("Game Over") 
+                    //alert("Game Over") 
                     $this.reset() 
                 }, 300)        
                 break;
@@ -85,19 +140,17 @@ class Game {
         
     }
 
-    public scorePoint() {
-        this.score ++
-        this.textfield.innerHTML = "Score: " + this.score 
-    }
-
     public reset() {
         this.level = 0
         this.score = 0
         this.textfield.innerHTML = "Score: " + this.score 
     }
 
+    public getScore():number {
+        return this.score
+    }
     
 
 }
 
-window.addEventListener("load", () => new Game())
+window.addEventListener("load", () => {  new Game() });

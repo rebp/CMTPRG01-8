@@ -2,9 +2,17 @@
 
 class Player extends DomObject {
 
+    private attackState:boolean
+    private accelerator:number
+
     constructor() {
         super( "player")
         this.randomPosition()
+
+        this.attackState = false
+
+        this.accelerator = 5
+        
         window.addEventListener("keydown", (e:KeyboardEvent) => this.onKeyDown(e))
         window.addEventListener("keyup", (e:KeyboardEvent) => this.onKeyUp(e))
     }
@@ -35,16 +43,16 @@ class Player extends DomObject {
     onKeyDown(event:KeyboardEvent):void {
         switch(event.keyCode){
         case 37:
-            this.speedX = -5
+            this.speedX = -this.accelerator
             break
         case 39:
-            this.speedX = 5
+            this.speedX = this.accelerator
             break
         case 38:
-            this.speedY = -5
+            this.speedY = -this.accelerator
             break
         case 40:
-            this.speedY = 5
+            this.speedY = this.accelerator
             break
         }
     }
@@ -66,5 +74,16 @@ class Player extends DomObject {
         }
     }
 
+    public getAttackState() : boolean {
+        return this.attackState
+    }
+
+    public setAttackState(state:boolean) :void {
+       this.attackState = state
+    }
+
+    public setAccelerator(accelerator:number) :void {
+        this.accelerator = accelerator
+    }
 
 }

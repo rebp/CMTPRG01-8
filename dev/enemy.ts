@@ -22,11 +22,18 @@ class Enemy extends DomObject {
         {
             this.speedX *= -1
             
+            if(this.speedX < 0) {
+                this.element.style.backgroundPositionX = "0px" 
+            } else {
+                this.element.style.backgroundPositionX = "-100px" 
+            }
+            
         }
         if (this.y < 0 || this.y > this.maxHeight)
         {
             this.speedY *= -1
         }
+
 
         this.draw()
 

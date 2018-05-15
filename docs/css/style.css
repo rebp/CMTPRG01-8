@@ -28,7 +28,8 @@ ui {
 enemy {
     width:100px; height:100px;
     background-image: url(../images/enemy.png);
-    background-size: contain;
+    overflow: hidden;
+    background-position-x: -100px;
 }
 
 cookie {
@@ -37,11 +38,27 @@ cookie {
     background-size: contain;   
 }
 
+cookiesandmilk {
+    width:100px; height:100px;
+    background-image: url(../images/cookies-and-milk.png);
+    background-size: contain;   
+}
+
 player {
     width:75px; height:75px;
     background-image: url(../images/smile.png);
     background-size: contain;   
 }
+
+.flicker {
+    animation: flicker 0.25s infinite;
+  }
+  @keyframes flicker {
+    0%{opacity: 1}    
+    50%{opacity: 0}    
+    75%{opacity: 1}
+    100%{opacity: 1}      
+  }
 
 bar {
     background-image: url(../images/scorebar.png);

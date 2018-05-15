@@ -37,6 +37,18 @@ var DomObject = (function () {
     };
     return DomObject;
 }());
+var CookiesAndMilk = (function (_super) {
+    __extends(CookiesAndMilk, _super);
+    function CookiesAndMilk() {
+        var _this = _super.call(this, "cookiesandmilk") || this;
+        _this.randomPosition();
+        return _this;
+    }
+    CookiesAndMilk.prototype.update = function () {
+        this.draw();
+    };
+    return CookiesAndMilk;
+}(DomObject));
 var Cookie = (function (_super) {
     __extends(Cookie, _super);
     function Cookie() {
@@ -63,6 +75,12 @@ var Enemy = (function (_super) {
         this.y += this.speedY;
         if (this.x < this.minWidth || this.x > this.maxWidth) {
             this.speedX *= -1;
+            if (this.speedX < 0) {
+                this.element.style.backgroundPositionX = "0px";
+            }
+            else {
+                this.element.style.backgroundPositionX = "-100px";
+            }
         }
         if (this.y < 0 || this.y > this.maxHeight) {
             this.speedY *= -1;
@@ -75,26 +93,34 @@ var Game = (function () {
     function Game() {
         this.enemies = [];
         this.cookies = [];
+        this.upgrades = [];
         this.level = 0;
         this.score = 0;
         this.statusbar = document.getElementsByTagName("bar")[0];
         this.textfield = document.getElementsByTagName("textfield")[0];
         this.player = new Player();
-        this.enemies.push(new Enemy());
-        this.enemies.push(new Enemy());
-        this.enemies.push(new Enemy());
-        this.enemies.push(new Enemy());
+        this.enemies.push(new Enemy(), new Enemy());
         this.cookies.push(new Cookie());
+        this.upgrades.push(new CookiesAndMilk());
         this.gameLoop();
     }
     Game.prototype.gameLoop = function () {
         var _this = this;
+        var $this = this;
         for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
             var enemy = _a[_i];
             enemy.update();
-            if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
-                this.player.randomPosition();
-                this.subtractLevel();
+            if ($this.player.getAttackState()) {
+            }
+            else {
+                if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
+                    this.player.randomPosition();
+                    this.player.element.className = 'flicker';
+                    setTimeout(function () {
+                        $this.player.element.classList.remove('flicker');
+                    }, 500);
+                    this.subtractLevel();
+                }
             }
         }
         for (var _b = 0, _c = this.cookies; _b < _c.length; _b++) {
@@ -106,8 +132,48 @@ var Game = (function () {
                 this.cookies.splice(i, 1);
                 cookie.element.remove();
                 this.cookies.push(new Cookie());
-                this.scorePoint();
+                this.score++;
+                this.textfield.innerHTML = "Score: " + this.score;
             }
+            for (var _d = 0, _e = this.enemies; _d < _e.length; _d++) {
+                var enemy = _e[_d];
+                if (Util.checkCollision(enemy.getBoundingClientRect(), cookie.getBoundingClientRect())) {
+                    var c = this.cookies[0];
+                    var i = this.cookies.indexOf(c);
+                    this.cookies.splice(i, 1);
+                    cookie.element.remove();
+                    this.cookies.push(new Cookie());
+                    this.score--;
+                    if (this.score < 1) {
+                        this.score = 0;
+                    }
+                    this.textfield.innerHTML = "Score: " + this.score;
+                }
+            }
+        }
+        for (var _f = 0, _g = this.upgrades; _f < _g.length; _f++) {
+            var upgrade = _g[_f];
+            if ($this.score < 3) {
+                upgrade.element.className = 'hide';
+            }
+            else {
+                upgrade.element.className = 'show';
+                if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
+                    var c = this.upgrades[0];
+                    var i = this.upgrades.indexOf(c);
+                    this.upgrades.splice(i, 1);
+                    upgrade.element.remove();
+                    $this.player.setAttackState(true);
+                    $this.player.setAccelerator(10);
+                    $this.player.element.className = 'flicker';
+                    setTimeout(function () {
+                        $this.player.setAttackState(false);
+                        $this.player.setAccelerator(5);
+                        $this.player.element.classList.remove('flicker');
+                    }, 7500);
+                }
+            }
+            upgrade.update();
         }
         this.player.update();
         requestAnimationFrame(function () { return _this.gameLoop(); });
@@ -129,29 +195,29 @@ var Game = (function () {
                 this.statusbar.style.backgroundPositionX = "-288px";
                 setTimeout(function () {
                     $this.statusbar.style.backgroundPositionX = "0px";
-                    alert("Game Over");
                     $this.reset();
                 }, 300);
                 break;
         }
-    };
-    Game.prototype.scorePoint = function () {
-        this.score++;
-        this.textfield.innerHTML = "Score: " + this.score;
     };
     Game.prototype.reset = function () {
         this.level = 0;
         this.score = 0;
         this.textfield.innerHTML = "Score: " + this.score;
     };
+    Game.prototype.getScore = function () {
+        return this.score;
+    };
     return Game;
 }());
-window.addEventListener("load", function () { return new Game(); });
+window.addEventListener("load", function () { new Game(); });
 var Player = (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this, "player") || this;
         _this.randomPosition();
+        _this.attackState = false;
+        _this.accelerator = 5;
         window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
         window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
         return _this;
@@ -176,16 +242,16 @@ var Player = (function (_super) {
     Player.prototype.onKeyDown = function (event) {
         switch (event.keyCode) {
             case 37:
-                this.speedX = -5;
+                this.speedX = -this.accelerator;
                 break;
             case 39:
-                this.speedX = 5;
+                this.speedX = this.accelerator;
                 break;
             case 38:
-                this.speedY = -5;
+                this.speedY = -this.accelerator;
                 break;
             case 40:
-                this.speedY = 5;
+                this.speedY = this.accelerator;
                 break;
         }
     };
@@ -204,6 +270,15 @@ var Player = (function (_super) {
                 this.speedY = 0;
                 break;
         }
+    };
+    Player.prototype.getAttackState = function () {
+        return this.attackState;
+    };
+    Player.prototype.setAttackState = function (state) {
+        this.attackState = state;
+    };
+    Player.prototype.setAccelerator = function (accelerator) {
+        this.accelerator = accelerator;
     };
     return Player;
 }(DomObject));
