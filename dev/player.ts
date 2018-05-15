@@ -2,16 +2,16 @@
 
 class Player extends DomObject {
 
-    private attackState:boolean
-    private accelerator:number
+    private behavior : PlayerBehavior
+
+    private attackState:boolean = false
+    private accelerator:number = 0
 
     constructor() {
         super( "player")
         this.randomPosition()
 
-        this.attackState = false
-
-        this.accelerator = 5
+        this.behavior = new NormalBehavior(this)
         
         window.addEventListener("keydown", (e:KeyboardEvent) => this.onKeyDown(e))
         window.addEventListener("keyup", (e:KeyboardEvent) => this.onKeyUp(e))
@@ -36,6 +36,8 @@ class Player extends DomObject {
         if (this.x < 0 - this.element.clientWidth ) {
             this.x = window.innerWidth
         }
+
+        this.behavior.setBehavior()
 
         this.draw()
     }
@@ -84,6 +86,10 @@ class Player extends DomObject {
 
     public setAccelerator(accelerator:number) :void {
         this.accelerator = accelerator
+    }
+
+    public setBehavior(behavior: PlayerBehavior):void {
+        this.behavior = behavior
     }
 
 }

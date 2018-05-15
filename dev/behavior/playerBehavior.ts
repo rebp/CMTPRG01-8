@@ -1,0 +1,3 @@
+interface PlayerBehavior {
+    setBehavior() : void
+}

@@ -92,13 +92,11 @@ class Game {
                     let i = this.upgrades.indexOf(c)
                     this.upgrades.splice(i, 1)
                     upgrade.element.remove()
-                    $this.player.setAttackState(true)
-                    $this.player.setAccelerator(10)
-                    $this.player.element.className = 'flicker'
+
+                    this.player.setBehavior(new DefenseBehavior(this.player))
+
                     setTimeout(() => { 
-                        $this.player.setAttackState(false)
-                        $this.player.setAccelerator(5)
-                        $this.player.element.classList.remove('flicker') 
+                        this.player.setBehavior(new NormalBehavior(this.player))
                     }, 7500)
                 }
             }
@@ -128,10 +126,12 @@ class Game {
             this.statusbar.style.backgroundPositionX = "-216px"
                 break;
             case 4:
-                this.statusbar.style.backgroundPositionX = "-288px"               
+                this.statusbar.style.backgroundPositionX = "-288px"
+                this.textfield.innerHTML = `GAME OVER <br /> <br />
+                                            Score: ${this.score}`         
                 setTimeout(function(){
                     $this.statusbar.style.backgroundPositionX = "0px" 
-                    //alert("Game Over") 
+                    alert() 
                     $this.reset() 
                 }, 300)        
                 break;

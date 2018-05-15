@@ -163,13 +163,9 @@ var Game = (function () {
                     var i = this.upgrades.indexOf(c);
                     this.upgrades.splice(i, 1);
                     upgrade.element.remove();
-                    $this.player.setAttackState(true);
-                    $this.player.setAccelerator(10);
-                    $this.player.element.className = 'flicker';
+                    this.player.setBehavior(new DefenseBehavior(this.player));
                     setTimeout(function () {
-                        $this.player.setAttackState(false);
-                        $this.player.setAccelerator(5);
-                        $this.player.element.classList.remove('flicker');
+                        _this.player.setBehavior(new NormalBehavior(_this.player));
                     }, 7500);
                 }
             }
@@ -193,8 +189,10 @@ var Game = (function () {
                 break;
             case 4:
                 this.statusbar.style.backgroundPositionX = "-288px";
+                this.textfield.innerHTML = "GAME OVER <br /> <br />\n                                            Score: " + this.score;
                 setTimeout(function () {
                     $this.statusbar.style.backgroundPositionX = "0px";
+                    alert();
                     $this.reset();
                 }, 300);
                 break;
@@ -215,9 +213,10 @@ var Player = (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this, "player") || this;
-        _this.randomPosition();
         _this.attackState = false;
-        _this.accelerator = 5;
+        _this.accelerator = 0;
+        _this.randomPosition();
+        _this.behavior = new NormalBehavior(_this);
         window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
         window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
         return _this;
@@ -237,6 +236,7 @@ var Player = (function (_super) {
         if (this.x < 0 - this.element.clientWidth) {
             this.x = window.innerWidth;
         }
+        this.behavior.setBehavior();
         this.draw();
     };
     Player.prototype.onKeyDown = function (event) {
@@ -280,6 +280,9 @@ var Player = (function (_super) {
     Player.prototype.setAccelerator = function (accelerator) {
         this.accelerator = accelerator;
     };
+    Player.prototype.setBehavior = function (behavior) {
+        this.behavior = behavior;
+    };
     return Player;
 }(DomObject));
 var Util = (function () {
@@ -292,5 +295,29 @@ var Util = (function () {
             b.top <= a.bottom);
     };
     return Util;
+}());
+var DefenseBehavior = (function () {
+    function DefenseBehavior(player) {
+        this.player = player;
+    }
+    DefenseBehavior.prototype.setBehavior = function () {
+        this.player.element.className = 'flicker';
+        this.player.setAttackState(true);
+        this.player.setAccelerator(12);
+    };
+    return DefenseBehavior;
+}());
+var NormalBehavior = (function () {
+    function NormalBehavior(player) {
+        this.player = player;
+    }
+    NormalBehavior.prototype.setBehavior = function () {
+        if (this.player.element.classList.contains('flicker')) {
+            this.player.element.classList.remove('flicker');
+        }
+        this.player.setAttackState(false);
+        this.player.setAccelerator(6);
+    };
+    return NormalBehavior;
 }());
 //# sourceMappingURL=main.js.map
