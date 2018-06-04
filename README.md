@@ -13,4 +13,4 @@
 ## Bekijken
 Open index.html in `localhost`
 
-[Pull Request](https://github.com/rebp/monster-shooter)
+[Pull Request](https://github.com/Hsnzync/monster-shooter/pull/1)
