@@ -1,5 +1,7 @@
 class Game {
 
+    private static instance: Game;
+
     private enemies: Enemy[] = []
     private cookies: Cookie[] = []
     private player: Player
@@ -24,6 +26,13 @@ class Game {
         this.upgrades.push(new CookiesAndMilk())
 
         this.gameLoop()
+    }
+    
+    public static getInstance() {
+        if (! Game.instance) {
+            Game.instance = new Game();
+        }
+        return Game.instance;
     }
 
     gameLoop() {
@@ -153,4 +162,4 @@ class Game {
 
 }
 
-window.addEventListener("load", () => {  new Game() });
+window.addEventListener("load", () => {  Game.getInstance() });
