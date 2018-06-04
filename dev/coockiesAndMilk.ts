@@ -8,7 +8,6 @@ class CookiesAndMilk extends DomObject {
     }
 
     public update():void {
-
         this.draw()
     }
 
