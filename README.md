@@ -6,7 +6,7 @@ Toelichting van je spelconcept
 
 ## Speelbare game
 
-Link naar de online speelbare game
+[Lik](https://rebp.github.io/CMTPRG01-8/)
 
 ## Installatie
 
