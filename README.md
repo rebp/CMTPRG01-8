@@ -1,7 +1,5 @@
 # Inleverdocument PRG01-8
 
-Dit is een opzet voor het inleverdocument. De exacte instructies vind je in de Modulewijzer.
-
 ## Inleiding
 
 Toelichting van je spelconcept
@@ -20,11 +18,11 @@ Het klassendiagram van je game.
 
 ## Pull request
 
-[Pull Request](https://github.com/Hsnzync/monster-shooter/pull/1)
+[Link](https://github.com/Hsnzync/monster-shooter/pull/1)
 
 ## Peer review
 
-Link naar de peer review die je in week 6 hebt gedaan. De link gaat naar een issue in het project van een medestudent.
+[Link](https://github.com/Hsnzync/monster-shooter/issues/2)
 
 ## Singleton
 
