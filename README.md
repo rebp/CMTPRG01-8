@@ -1,16 +1,48 @@
-# Cookie Monster Game
+# Inleverdocument PRG01-8
 
-## Het project
+Dit is een opzet voor het inleverdocument. De exacte instructies vind je in de Modulewijzer.
 
-- De **docs** map bevat de client side:html en css. De js file wordt hier automatisch in gezet door de compiler.
-- De **dev** map bevat de typescript files.
-- **game.ts** is het startpunt van de app. Hierin staat de window listener die een `new Game()` maakt.
+## Inleiding
 
-## Compileren
-- Druk op CMD+SHIFT+B en kies voor `watch mode`. Je `.ts` files worden nu samengevoegd in `main.js`.
-- tsconfig.json bevat instellingen voor het compileren.
+Toelichting van je spelconcept
 
-## Bekijken
-Open index.html in `localhost`
+## Speelbare game
+
+Link naar de online speelbare game
+
+## Installatie
+
+Instructies voor het clonen, editen en runnen van de game via deze repository.
+
+## Klassendiagram
+
+Het klassendiagram van je game.
+
+## Pull request
 
 [Pull Request](https://github.com/Hsnzync/monster-shooter/pull/1)
+
+## Peer review
+
+Link naar de peer review die je in week 6 hebt gedaan. De link gaat naar een issue in het project van een medestudent.
+
+## Singleton
+
+Beschrijf waar en waarom je de singleton hebt toegepast.
+
+## Polymorfisme
+
+Beschrijf van minimaal 2 plekken uit jouw code waar en waarom er gebruik is gemaakt van polymorfisme.
+
+## Strategy
+
+Beschrijf waar en waarom je het strategy pattern hebt toegepast.
+
+## Observer
+
+Beschrijf waar en waarom je het observer pattern hebt toegepast.
+
+## Gameplay componenten
+
+Beschrijf per component waar en waarom je het hebt toegepast
+
