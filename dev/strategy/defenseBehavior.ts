@@ -7,8 +7,7 @@ class DefenseBehavior implements PlayerBehavior {
     }
 
     public setBehavior() {
-        this.player.element.className = 'flicker'
-        this.player.setAttackState(true)        
+        this.player.element.className = 'flicker'     
         this.player.setAccelerator(12)
     }
 }

@@ -1,15 +1,18 @@
 /// <reference path="./DomObject.ts" />
 
-class Enemy extends DomObject {
+class Enemy extends DomObject implements Observer{
 
-    constructor() {
+    private player:Player;
+
+    constructor(player: Player) {
         super( "enemy")
 
-        // this.speedX = (Math.random() * (5 - (-5)) + (-5))
-        // this.speedY = (Math.random() * (3 - (-3)) + (-3))
         this.speedX = 5
         this.speedY = -5
         this.randomPosition()
+
+        this.player = player;
+        player.add(this)
 
     }
 
@@ -37,6 +40,16 @@ class Enemy extends DomObject {
 
         this.draw()
 
+    }
+
+    public notify() {
+        this.speedX = 2
+        this.speedY = -2
+
+        setTimeout(() => {
+            this.speedX = 5
+            this.speedY = -5
+        }, 5000);
     }
 
 

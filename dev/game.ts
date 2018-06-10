@@ -21,7 +21,11 @@ class Game {
         this.textfield = document.getElementsByTagName("textfield")[0] as HTMLElement
 
         this.player = new Player()
-        this.enemies.push(new Enemy(), new Enemy())
+        
+        for(let i = 0; i < 2; i++) {
+            this.enemies.push(new Enemy(this.player))
+        }
+
         this.cookies.push(new Cookie())        
         this.upgrades.push(new CookiesAndMilk())
 
@@ -42,20 +46,15 @@ class Game {
         for(const enemy of this.enemies ) {
             enemy.update()
 
-                if($this.player.getAttackState()) {
-
-                } else {
-                    if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
-                        this.player.randomPosition()
-                        this.player.element.className = 'flicker'
-                        setTimeout(function(){
-                            $this.player.element.classList.remove('flicker')
-                        }, 500)
-                        this.subtractLevel()
-                    }
-                }
-
-          }
+            if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
+                this.player.randomPosition()
+                this.player.element.className = 'flicker'
+                setTimeout(function(){
+                    $this.player.element.classList.remove('flicker')
+                }, 500)
+                this.subtractLevel()
+            }
+        }
 
         for (const cookie of this.cookies) {
             cookie.update()
@@ -72,7 +71,7 @@ class Game {
             }
             
             for(const enemy of this.enemies ) {
-                if(Util.checkCollision(enemy.getBoundingClientRect(), cookie.getBoundingClientRect())){
+                if(Util.checkCollision(cookie.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
                     let c = this.cookies[0]
                     let i = this.cookies.indexOf(c)
                     this.cookies.splice(i, 1)
@@ -97,6 +96,9 @@ class Game {
                 upgrade.element.className = 'show'
 
                 if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
+
+                    this.player.notifyAllObservers()
+
                     let c = this.upgrades[0]
                     let i = this.upgrades.indexOf(c)
                     this.upgrades.splice(i, 1)
@@ -116,6 +118,7 @@ class Game {
         }
 
         this.player.update()
+        
         requestAnimationFrame(() => this.gameLoop())
     }
 

@@ -3,9 +3,9 @@
 class Player extends DomObject {
 
     private behavior : PlayerBehavior
-
-    private attackState:boolean = false
     private accelerator:number = 0
+
+    private observers: Observer[] = []
 
     constructor() {
         super( "player")
@@ -76,20 +76,22 @@ class Player extends DomObject {
         }
     }
 
-    public getAttackState() : boolean {
-        return this.attackState
-    }
-
-    public setAttackState(state:boolean) :void {
-       this.attackState = state
-    }
-
     public setAccelerator(accelerator:number) :void {
         this.accelerator = accelerator
     }
 
     public setBehavior(behavior: PlayerBehavior):void {
         this.behavior = behavior
+    }
+
+    public add(o:Observer):void {
+        this.observers.push(o)
+    }
+
+    public notifyAllObservers() : void {
+        this.observers.forEach( (observer) => {
+            observer.notify()
+        } )
     }
 
 }

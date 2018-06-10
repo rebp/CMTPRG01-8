@@ -63,11 +63,13 @@ var Cookie = (function (_super) {
 }(DomObject));
 var Enemy = (function (_super) {
     __extends(Enemy, _super);
-    function Enemy() {
+    function Enemy(player) {
         var _this = _super.call(this, "enemy") || this;
         _this.speedX = 5;
         _this.speedY = -5;
         _this.randomPosition();
+        _this.player = player;
+        player.add(_this);
         return _this;
     }
     Enemy.prototype.update = function () {
@@ -87,6 +89,15 @@ var Enemy = (function (_super) {
         }
         this.draw();
     };
+    Enemy.prototype.notify = function () {
+        var _this = this;
+        this.speedX = 2;
+        this.speedY = -2;
+        setTimeout(function () {
+            _this.speedX = 5;
+            _this.speedY = -5;
+        }, 5000);
+    };
     return Enemy;
 }(DomObject));
 var Game = (function () {
@@ -99,28 +110,32 @@ var Game = (function () {
         this.statusbar = document.getElementsByTagName("bar")[0];
         this.textfield = document.getElementsByTagName("textfield")[0];
         this.player = new Player();
-        this.enemies.push(new Enemy(), new Enemy());
+        for (var i = 0; i < 2; i++) {
+            this.enemies.push(new Enemy(this.player));
+        }
         this.cookies.push(new Cookie());
         this.upgrades.push(new CookiesAndMilk());
         this.gameLoop();
     }
+    Game.getInstance = function () {
+        if (!Game.instance) {
+            Game.instance = new Game();
+        }
+        return Game.instance;
+    };
     Game.prototype.gameLoop = function () {
         var _this = this;
         var $this = this;
         for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
             var enemy = _a[_i];
             enemy.update();
-            if ($this.player.getAttackState()) {
-            }
-            else {
-                if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
-                    this.player.randomPosition();
-                    this.player.element.className = 'flicker';
-                    setTimeout(function () {
-                        $this.player.element.classList.remove('flicker');
-                    }, 500);
-                    this.subtractLevel();
-                }
+            if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
+                this.player.randomPosition();
+                this.player.element.className = 'flicker';
+                setTimeout(function () {
+                    $this.player.element.classList.remove('flicker');
+                }, 500);
+                this.subtractLevel();
             }
         }
         for (var _b = 0, _c = this.cookies; _b < _c.length; _b++) {
@@ -137,7 +152,7 @@ var Game = (function () {
             }
             for (var _d = 0, _e = this.enemies; _d < _e.length; _d++) {
                 var enemy = _e[_d];
-                if (Util.checkCollision(enemy.getBoundingClientRect(), cookie.getBoundingClientRect())) {
+                if (Util.checkCollision(cookie.getBoundingClientRect(), enemy.getBoundingClientRect())) {
                     var c = this.cookies[0];
                     var i = this.cookies.indexOf(c);
                     this.cookies.splice(i, 1);
@@ -159,6 +174,7 @@ var Game = (function () {
             else {
                 upgrade.element.className = 'show';
                 if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
+                    this.player.notifyAllObservers();
                     var c = this.upgrades[0];
                     var i = this.upgrades.indexOf(c);
                     this.upgrades.splice(i, 1);
@@ -208,13 +224,13 @@ var Game = (function () {
     };
     return Game;
 }());
-window.addEventListener("load", function () { new Game(); });
+window.addEventListener("load", function () { Game.getInstance(); });
 var Player = (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this, "player") || this;
-        _this.attackState = false;
         _this.accelerator = 0;
+        _this.observers = [];
         _this.randomPosition();
         _this.behavior = new NormalBehavior(_this);
         window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
@@ -271,17 +287,19 @@ var Player = (function (_super) {
                 break;
         }
     };
-    Player.prototype.getAttackState = function () {
-        return this.attackState;
-    };
-    Player.prototype.setAttackState = function (state) {
-        this.attackState = state;
-    };
     Player.prototype.setAccelerator = function (accelerator) {
         this.accelerator = accelerator;
     };
     Player.prototype.setBehavior = function (behavior) {
         this.behavior = behavior;
+    };
+    Player.prototype.add = function (o) {
+        this.observers.push(o);
+    };
+    Player.prototype.notifyAllObservers = function () {
+        this.observers.forEach(function (observer) {
+            observer.notify();
+        });
     };
     return Player;
 }(DomObject));
@@ -302,7 +320,6 @@ var DefenseBehavior = (function () {
     }
     DefenseBehavior.prototype.setBehavior = function () {
         this.player.element.className = 'flicker';
-        this.player.setAttackState(true);
         this.player.setAccelerator(12);
     };
     return DefenseBehavior;
@@ -315,7 +332,6 @@ var NormalBehavior = (function () {
         if (this.player.element.classList.contains('flicker')) {
             this.player.element.classList.remove('flicker');
         }
-        this.player.setAttackState(false);
         this.player.setAccelerator(6);
     };
     return NormalBehavior;

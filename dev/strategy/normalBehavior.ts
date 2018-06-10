@@ -12,7 +12,6 @@ class NormalBehavior implements PlayerBehavior {
             this.player.element.classList.remove('flicker')
         }
 
-        this.player.setAttackState(false)
         this.player.setAccelerator(6)
     }
 }
