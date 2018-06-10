@@ -102,6 +102,7 @@ var Enemy = (function (_super) {
 }(DomObject));
 var Game = (function () {
     function Game() {
+        var _this = this;
         this.enemies = [];
         this.cookies = [];
         this.upgrades = [];
@@ -114,7 +115,9 @@ var Game = (function () {
             this.enemies.push(new Enemy(this.player));
         }
         this.cookies.push(new Cookie());
-        this.upgrades.push(new CookiesAndMilk());
+        setInterval(function () {
+            _this.upgrades.push(new CookiesAndMilk());
+        }, 10000);
         this.gameLoop();
     }
     Game.getInstance = function () {
@@ -168,24 +171,18 @@ var Game = (function () {
         }
         for (var _f = 0, _g = this.upgrades; _f < _g.length; _f++) {
             var upgrade = _g[_f];
-            if ($this.score < 3) {
-                upgrade.element.className = 'hide';
-            }
-            else {
-                upgrade.element.className = 'show';
-                if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
-                    this.player.notifyAllObservers();
-                    var c = this.upgrades[0];
-                    var i = this.upgrades.indexOf(c);
-                    this.upgrades.splice(i, 1);
-                    upgrade.element.remove();
-                    this.player.setBehavior(new DefenseBehavior(this.player));
-                    setTimeout(function () {
-                        _this.player.setBehavior(new NormalBehavior(_this.player));
-                    }, 7500);
-                }
-            }
             upgrade.update();
+            if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
+                this.player.notifyAllObservers();
+                var c = this.upgrades[0];
+                var i = this.upgrades.indexOf(c);
+                this.upgrades.splice(i, 1);
+                upgrade.element.remove();
+                this.player.setBehavior(new DefenseBehavior(this.player));
+                setTimeout(function () {
+                    _this.player.setBehavior(new NormalBehavior(_this.player));
+                }, 7500);
+            }
         }
         this.player.update();
         requestAnimationFrame(function () { return _this.gameLoop(); });

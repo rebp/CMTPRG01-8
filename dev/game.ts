@@ -27,7 +27,10 @@ class Game {
         }
 
         this.cookies.push(new Cookie())        
-        this.upgrades.push(new CookiesAndMilk())
+        
+        setInterval( () => {
+            this.upgrades.push(new CookiesAndMilk())
+        }, 10000 )
 
         this.gameLoop()
     }
@@ -90,31 +93,24 @@ class Game {
 
         for(const upgrade of this.upgrades) {
 
-            if($this.score < 3) {
-                upgrade.element.className = 'hide'
-            } else {
-                upgrade.element.className = 'show'
-
-                if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
-
-                    this.player.notifyAllObservers()
-
-                    let c = this.upgrades[0]
-                    let i = this.upgrades.indexOf(c)
-                    this.upgrades.splice(i, 1)
-                    upgrade.element.remove()
-
-                    this.player.setBehavior(new DefenseBehavior(this.player))
-
-                    setTimeout(() => { 
-                        this.player.setBehavior(new NormalBehavior(this.player))
-                    }, 7500)
-                }
-            }
-
-
-
             upgrade.update()
+
+            if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
+
+                this.player.notifyAllObservers()
+
+                let c = this.upgrades[0]
+                let i = this.upgrades.indexOf(c)
+                this.upgrades.splice(i, 1)
+                upgrade.element.remove()
+
+                this.player.setBehavior(new DefenseBehavior(this.player))
+
+                setTimeout(() => { 
+                    this.player.setBehavior(new NormalBehavior(this.player))
+                }, 7500)
+            }
+            
         }
 
         this.player.update()
