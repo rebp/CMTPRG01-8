@@ -111,7 +111,7 @@ var Game = (function () {
         this.statusbar = document.getElementsByTagName("bar")[0];
         this.textfield = document.getElementsByTagName("textfield")[0];
         this.player = new Player();
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 5; i++) {
             this.enemies.push(new Enemy(this.player));
         }
         this.cookies.push(new Cookie());

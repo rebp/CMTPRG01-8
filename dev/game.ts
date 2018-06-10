@@ -22,7 +22,7 @@ class Game {
 
         this.player = new Player()
         
-        for(let i = 0; i < 2; i++) {
+        for(let i = 0; i < 5; i++) {
             this.enemies.push(new Enemy(this.player))
         }
 

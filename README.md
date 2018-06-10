@@ -14,7 +14,7 @@ Instructies voor het clonen, editen en runnen van de game via deze repository.
 
 ## Klassendiagram
 
-Het klassendiagram van je game.
+Het klassendiagram komt hier
 
 ## Pull request
 
@@ -26,21 +26,18 @@ Het klassendiagram van je game.
 
 ## Singleton
 
-Beschrijf waar en waarom je de singleton hebt toegepast.
+De Singleton Pattern zit in de Game class. Op deze manier is the game class globaal toegankelijk.
 
 ## Polymorfisme
 
-Beschrijf van minimaal 2 plekken uit jouw code waar en waarom er gebruik is gemaakt van polymorfisme.
+-
+-
 
 ## Strategy
 
-Beschrijf waar en waarom je het strategy pattern hebt toegepast.
+De strategy pattern zit in de move behavior van de player. De player heeft dmv deze pattern twee verschillende behaviours.
+
 
 ## Observer
 
-Beschrijf waar en waarom je het observer pattern hebt toegepast.
-
-## Gameplay componenten
-
-Beschrijf per component waar en waarom je het hebt toegepast
-
+In de Observer pattern zijn de enemies de observers en player is de subject. Op het moment dat de player een power up pakt worden de enemies genotified en krijgen ze en langzame snelheid die 3 seconden lang duurt.
