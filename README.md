@@ -30,8 +30,8 @@ De Singleton Pattern zit in de Game class. Op deze manier is the game class glob
 
 ## Polymorfisme
 
--
--
+- Op het moment dat de player een power up pakt verandert zijn behavior
+- Op het moment dat de player een power up pakt worden de enemies genotified en krijgen ze en langzame snelheid die 3 seconden lang duurt.
 
 ## Strategy
 
@@ -40,4 +40,4 @@ De strategy pattern zit in de move behavior van de player. De player heeft dmv d
 
 ## Observer
 
-In de Observer pattern zijn de enemies de observers en player is de subject. Op het moment dat de player een power up pakt worden de enemies genotified en krijgen ze en langzame snelheid die 3 seconden lang duurt.
+In de Observer pattern zijn de enemies de observers en player is de subject.
