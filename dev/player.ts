@@ -17,6 +17,10 @@ class Player extends DomObject {
         window.addEventListener("keyup", (e:KeyboardEvent) => this.onKeyUp(e))
     }
 
+    public collision(){
+        this.behavior.collision()
+    }
+
     public update():void {
         this.x += this.speedX
         this.y += this.speedY

@@ -105,18 +105,21 @@ var Game = (function () {
         var _this = this;
         this.enemies = [];
         this.cookies = [];
+        this.addEnemy = true;
         this.upgrades = [];
         this.level = 0;
         this.score = 0;
         this.statusbar = document.getElementsByTagName("bar")[0];
         this.textfield = document.getElementsByTagName("textfield")[0];
         this.player = new Player();
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 2; i++) {
             this.enemies.push(new Enemy(this.player));
         }
         this.cookies.push(new Cookie());
         setInterval(function () {
-            _this.upgrades.push(new CookiesAndMilk());
+            if (_this.upgrades.length == 0) {
+                _this.upgrades.push(new CookiesAndMilk());
+            }
         }, 10000);
         this.gameLoop();
     }
@@ -133,12 +136,7 @@ var Game = (function () {
             var enemy = _a[_i];
             enemy.update();
             if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
-                this.player.randomPosition();
-                this.player.element.className = 'flicker';
-                setTimeout(function () {
-                    $this.player.element.classList.remove('flicker');
-                }, 500);
-                this.subtractLevel();
+                this.player.collision();
             }
         }
         for (var _b = 0, _c = this.cookies; _b < _c.length; _b++) {
@@ -181,7 +179,13 @@ var Game = (function () {
                 this.player.setBehavior(new DefenseBehavior(this.player));
                 setTimeout(function () {
                     _this.player.setBehavior(new NormalBehavior(_this.player));
-                }, 7500);
+                }, 5000);
+            }
+        }
+        if (this.addEnemy) {
+            if (this.score == 10) {
+                this.enemies.push(new Enemy(this.player));
+                this.addEnemy = false;
             }
         }
         this.player.update();
@@ -234,6 +238,9 @@ var Player = (function (_super) {
         window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
         return _this;
     }
+    Player.prototype.collision = function () {
+        this.behavior.collision();
+    };
     Player.prototype.update = function () {
         this.x += this.speedX;
         this.y += this.speedY;
@@ -315,6 +322,9 @@ var DefenseBehavior = (function () {
     function DefenseBehavior(player) {
         this.player = player;
     }
+    DefenseBehavior.prototype.collision = function () {
+        console.log("defense collision");
+    };
     DefenseBehavior.prototype.setBehavior = function () {
         this.player.element.className = 'flicker';
         this.player.setAccelerator(12);
@@ -325,6 +335,17 @@ var NormalBehavior = (function () {
     function NormalBehavior(player) {
         this.player = player;
     }
+    NormalBehavior.prototype.collision = function () {
+        var _this = this;
+        console.log("normal collision");
+        this.player.randomPosition();
+        this.player.element.className = 'flicker';
+        this.player.setAccelerator(6);
+        setTimeout(function () {
+            _this.player.element.classList.remove('flicker');
+        }, 500);
+        Game.getInstance().subtractLevel();
+    };
     NormalBehavior.prototype.setBehavior = function () {
         if (this.player.element.classList.contains('flicker')) {
             this.player.element.classList.remove('flicker');

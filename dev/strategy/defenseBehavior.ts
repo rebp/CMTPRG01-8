@@ -6,6 +6,10 @@ class DefenseBehavior implements PlayerBehavior {
         this.player = player
     }
 
+    collision(): void {
+        console.log("defense collision")
+    }
+
     public setBehavior() {
         this.player.element.className = 'flicker'     
         this.player.setAccelerator(12)

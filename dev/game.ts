@@ -4,6 +4,7 @@ class Game {
 
     private enemies: Enemy[] = []
     private cookies: Cookie[] = []
+    private addEnemy: boolean = true
     private player: Player
 
     private upgrades: CookiesAndMilk[] = []
@@ -15,22 +16,27 @@ class Game {
     private score:number = 0
     
     
-    constructor() {
+   private constructor() {
 
         this.statusbar = document.getElementsByTagName("bar")[0] as HTMLElement
         this.textfield = document.getElementsByTagName("textfield")[0] as HTMLElement
 
         this.player = new Player()
         
-        for(let i = 0; i < 5; i++) {
+        for(let i = 0; i < 2; i++) {
             this.enemies.push(new Enemy(this.player))
         }
 
-        this.cookies.push(new Cookie())        
+        this.cookies.push(new Cookie())
         
         setInterval( () => {
-            this.upgrades.push(new CookiesAndMilk())
+
+            if (this.upgrades.length == 0) {
+                this.upgrades.push(new CookiesAndMilk())
+            }
+            
         }, 10000 )
+
 
         this.gameLoop()
     }
@@ -50,12 +56,7 @@ class Game {
             enemy.update()
 
             if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
-                this.player.randomPosition()
-                this.player.element.className = 'flicker'
-                setTimeout(function(){
-                    $this.player.element.classList.remove('flicker')
-                }, 500)
-                this.subtractLevel()
+                this.player.collision()
             }
         }
 
@@ -108,10 +109,18 @@ class Game {
 
                 setTimeout(() => { 
                     this.player.setBehavior(new NormalBehavior(this.player))
-                }, 7500)
+                }, 5000)
             }
             
         }
+
+        if(this.addEnemy) {
+            if (this.score == 10) {
+                this.enemies.push( new Enemy(this.player) )   
+                this.addEnemy = false  
+            }
+        }       
+
 
         this.player.update()
         

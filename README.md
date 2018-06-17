@@ -27,11 +27,12 @@ Het klassendiagram komt hier
 ## Singleton
 
 De Singleton Pattern zit in de Game class. Op deze manier is the game class globaal toegankelijk.
+De singleton class heb ik in de normalBehavior class toegepast.
 
 ## Polymorfisme
 
-- Op het moment dat de player een power up pakt verandert zijn behavior
-- Op het moment dat de player een power up pakt worden de enemies genotified en krijgen ze en langzame snelheid die 3 seconden lang duurt.
+- De player, enemies en upgrades extenden allemaal van de DomObject class
+-
 
 ## Strategy
 
