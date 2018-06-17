@@ -10,6 +10,13 @@ Toelichting van je spelconcept
 
 ## Installatie
 
+#### Repository kopieren:
+- `git@github.com:rebp/CMTPRG01-8.git`
+
+#### Project installeren:
+- Visual Studio Code openen
+- Terminal openen en repository clonen `git clone git@github.com:rebp/CMTPRG01-8.git` 
+- Build/Watch: `Shift + CMD + B`
 
 
 ## Klassendiagram
