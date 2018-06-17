@@ -10,7 +10,7 @@ Toelichting van je spelconcept
 
 ## Installatie
 
-Instructies voor het clonen, editen en runnen van de game via deze repository.
+
 
 ## Klassendiagram
 
