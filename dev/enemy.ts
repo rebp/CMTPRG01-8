@@ -42,7 +42,7 @@ class Enemy extends DomObject implements Observer{
 
     }
 
-    public notify() {
+    public notify():void {
         this.speedX = 2
         this.speedY = -2
 

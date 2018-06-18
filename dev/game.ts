@@ -50,13 +50,29 @@ class Game {
 
     gameLoop() {
 
-        let $this = this
-
         for(const enemy of this.enemies ) {
             enemy.update()
 
             if( Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect()) ){
                 this.player.collision()
+            }
+
+            for(const upgrade of this.upgrades) {
+
+                if( Util.checkCollision(upgrade.getBoundingClientRect(), enemy.getBoundingClientRect()) ) {
+                    let c = this.upgrades[0]
+                    let i = this.upgrades.indexOf(c)
+                    this.upgrades.splice(i, 1)
+                    upgrade.element.remove()
+
+                    this.score = this.score - 2
+                    if(this.score < 1) {
+                        this.score = 0
+                    }                    
+                    this.textfield.innerHTML = "Score: " + this.score 
+
+                }
+
             }
         }
 
@@ -119,8 +135,7 @@ class Game {
                 this.enemies.push( new Enemy(this.player) )   
                 this.addEnemy = false  
             }
-        }       
-
+        }
 
         this.player.update()
         

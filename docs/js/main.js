@@ -131,16 +131,29 @@ var Game = (function () {
     };
     Game.prototype.gameLoop = function () {
         var _this = this;
-        var $this = this;
         for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
             var enemy = _a[_i];
             enemy.update();
             if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
                 this.player.collision();
             }
+            for (var _b = 0, _c = this.upgrades; _b < _c.length; _b++) {
+                var upgrade = _c[_b];
+                if (Util.checkCollision(upgrade.getBoundingClientRect(), enemy.getBoundingClientRect())) {
+                    var c = this.upgrades[0];
+                    var i = this.upgrades.indexOf(c);
+                    this.upgrades.splice(i, 1);
+                    upgrade.element.remove();
+                    this.score = this.score - 2;
+                    if (this.score < 1) {
+                        this.score = 0;
+                    }
+                    this.textfield.innerHTML = "Score: " + this.score;
+                }
+            }
         }
-        for (var _b = 0, _c = this.cookies; _b < _c.length; _b++) {
-            var cookie = _c[_b];
+        for (var _d = 0, _e = this.cookies; _d < _e.length; _d++) {
+            var cookie = _e[_d];
             cookie.update();
             if (Util.checkCollision(cookie.getBoundingClientRect(), this.player.getBoundingClientRect())) {
                 var c = this.cookies[0];
@@ -151,8 +164,8 @@ var Game = (function () {
                 this.score++;
                 this.textfield.innerHTML = "Score: " + this.score;
             }
-            for (var _d = 0, _e = this.enemies; _d < _e.length; _d++) {
-                var enemy = _e[_d];
+            for (var _f = 0, _g = this.enemies; _f < _g.length; _f++) {
+                var enemy = _g[_f];
                 if (Util.checkCollision(cookie.getBoundingClientRect(), enemy.getBoundingClientRect())) {
                     var c = this.cookies[0];
                     var i = this.cookies.indexOf(c);
@@ -167,8 +180,8 @@ var Game = (function () {
                 }
             }
         }
-        for (var _f = 0, _g = this.upgrades; _f < _g.length; _f++) {
-            var upgrade = _g[_f];
+        for (var _h = 0, _j = this.upgrades; _h < _j.length; _h++) {
+            var upgrade = _j[_h];
             upgrade.update();
             if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
                 this.player.notifyAllObservers();

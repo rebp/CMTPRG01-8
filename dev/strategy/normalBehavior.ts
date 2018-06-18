@@ -18,12 +18,14 @@ class NormalBehavior implements PlayerBehavior {
         
         Game.getInstance().subtractLevel()
     }
-    public setBehavior() {
+
+    public setBehavior():void {
 
         if( this.player.element.classList.contains('flicker') ){
             this.player.element.classList.remove('flicker')
         }
 
         this.player.setAccelerator(6)
+        
     }
 }
