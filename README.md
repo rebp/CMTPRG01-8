@@ -21,7 +21,7 @@ Toelichting van je spelconcept
 
 ## Klassendiagram
 
-Het klassendiagram komt hier
+[![Klassediagram](https://github.com/rebp/monster-shooter/blob/master/docs/images/klassediagram.jpg?raw=true)](https://github.com/rebp/monster-shooter/blob/master/docs/images/klassediagram.jpg?raw=true)
 
 ## Pull request
 
