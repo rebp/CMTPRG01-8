@@ -38,8 +38,8 @@ De singleton class heb ik in de normalBehavior class toegepast.
 
 ## Polymorfisme
 
-- De player, enemies en upgrades extenden allemaal van de DomObject class
--
+- De player, enemies en powerups extenden allemaal van de DomObject class
+- De CookiesJar en CookiesAndMilk classes extenden van de Powerup class
 
 ## Strategy
 
