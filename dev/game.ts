@@ -155,27 +155,7 @@ class Game {
 
         }
 
-        // for(const upgrade of this.upgrades) {
 
-        //     upgrade.update()
-
-        //     if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
-
-        //         this.player.notifyAllObservers()
-
-        //         let c = this.upgrades[0]
-        //         let i = this.upgrades.indexOf(c)
-        //         this.upgrades.splice(i, 1)
-        //         upgrade.element.remove()
-
-        //         this.player.setBehavior(new DefenseBehavior(this.player))
-
-        //         setTimeout(() => { 
-        //             this.player.setBehavior(new NormalBehavior(this.player))
-        //         }, 5000)
-        //     }
-            
-        // }
 
         if(this.addEnemy) {
             if (this.score == 10) {
