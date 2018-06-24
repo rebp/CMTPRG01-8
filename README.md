@@ -1,8 +1,8 @@
 # Cookie Monsters
 
 ## Inleiding
+Je bent gek op koekjes en moet, daarom zoveel koekjes mogelijk verzamelen. Helaas zijn er monsters die jou koekjes ook willen eten. Zorg goed dat je niet wordt geraakt door een van deze monsters, anders krijg je een punt minder. Probeer de powerups te pakken als het kan, op deze manier kan je makkelijker meer koekjes pakken. Succes!!
 
-Toelichting van je spelconcept
 
 ## Speelbare game
 
