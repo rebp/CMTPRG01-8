@@ -44,6 +44,12 @@ cookiesandmilk {
     background-size: contain;   
 }
 
+cookiesjar {
+    width:150px; height:150px;
+    background-image: url(../images/cookies-jar.png);
+    background-size: contain;   
+}
+
 player {
     width:75px; height:75px;
     background-image: url(../images/smile.png);

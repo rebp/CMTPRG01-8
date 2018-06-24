@@ -37,18 +37,25 @@ var DomObject = (function () {
     };
     return DomObject;
 }());
-var CookiesAndMilk = (function (_super) {
-    __extends(CookiesAndMilk, _super);
-    function CookiesAndMilk() {
-        var _this = _super.call(this, "cookiesandmilk") || this;
+var Powerup = (function (_super) {
+    __extends(Powerup, _super);
+    function Powerup(type) {
+        var _this = _super.call(this, type) || this;
         _this.randomPosition();
         return _this;
     }
-    CookiesAndMilk.prototype.update = function () {
+    Powerup.prototype.update = function () {
         this.draw();
     };
-    return CookiesAndMilk;
+    return Powerup;
 }(DomObject));
+var CookiesAndMilk = (function (_super) {
+    __extends(CookiesAndMilk, _super);
+    function CookiesAndMilk() {
+        return _super.call(this, "cookiesandmilk") || this;
+    }
+    return CookiesAndMilk;
+}(Powerup));
 var Cookie = (function (_super) {
     __extends(Cookie, _super);
     function Cookie() {
@@ -61,6 +68,13 @@ var Cookie = (function (_super) {
     };
     return Cookie;
 }(DomObject));
+var CookiesJar = (function (_super) {
+    __extends(CookiesJar, _super);
+    function CookiesJar() {
+        return _super.call(this, "cookiesjar") || this;
+    }
+    return CookiesJar;
+}(Powerup));
 var Enemy = (function (_super) {
     __extends(Enemy, _super);
     function Enemy(player) {
@@ -106,7 +120,7 @@ var Game = (function () {
         this.enemies = [];
         this.cookies = [];
         this.addEnemy = true;
-        this.upgrades = [];
+        this.powerups = [];
         this.level = 0;
         this.score = 0;
         this.statusbar = document.getElementsByTagName("bar")[0];
@@ -117,10 +131,15 @@ var Game = (function () {
         }
         this.cookies.push(new Cookie());
         setInterval(function () {
-            if (_this.upgrades.length == 0) {
-                _this.upgrades.push(new CookiesAndMilk());
+            if (_this.powerups.length == 0) {
+                if (Math.random() <= 0.5) {
+                    _this.powerups.push(new CookiesJar());
+                }
+                else {
+                    _this.powerups.push(new CookiesAndMilk());
+                }
             }
-        }, 10000);
+        }, 3000);
         this.gameLoop();
     }
     Game.getInstance = function () {
@@ -131,25 +150,38 @@ var Game = (function () {
     };
     Game.prototype.gameLoop = function () {
         var _this = this;
-        for (var _i = 0, _a = this.enemies; _i < _a.length; _i++) {
-            var enemy = _a[_i];
+        for (var _i = 0, _a = this.powerups; _i < _a.length; _i++) {
+            var powerup = _a[_i];
+            if (powerup instanceof CookiesAndMilk) {
+                if (Util.checkCollision(powerup.getBoundingClientRect(), this.player.getBoundingClientRect())) {
+                    this.player.notifyAllObservers();
+                    var c = this.powerups[0];
+                    var i = this.powerups.indexOf(c);
+                    this.powerups.splice(i, 1);
+                    powerup.element.remove();
+                    this.player.setBehavior(new DefenseBehavior(this.player));
+                    setTimeout(function () {
+                        _this.player.setBehavior(new NormalBehavior(_this.player));
+                    }, 5000);
+                }
+            }
+            if (powerup instanceof CookiesJar) {
+                if (Util.checkCollision(powerup.getBoundingClientRect(), this.player.getBoundingClientRect())) {
+                    var c = this.powerups[0];
+                    var i = this.powerups.indexOf(c);
+                    this.powerups.splice(i, 1);
+                    powerup.element.remove();
+                    this.score = this.score + 3;
+                    this.textfield.innerHTML = "Score: " + this.score;
+                }
+            }
+            powerup.update();
+        }
+        for (var _b = 0, _c = this.enemies; _b < _c.length; _b++) {
+            var enemy = _c[_b];
             enemy.update();
             if (Util.checkCollision(this.player.getBoundingClientRect(), enemy.getBoundingClientRect())) {
                 this.player.collision();
-            }
-            for (var _b = 0, _c = this.upgrades; _b < _c.length; _b++) {
-                var upgrade = _c[_b];
-                if (Util.checkCollision(upgrade.getBoundingClientRect(), enemy.getBoundingClientRect())) {
-                    var c = this.upgrades[0];
-                    var i = this.upgrades.indexOf(c);
-                    this.upgrades.splice(i, 1);
-                    upgrade.element.remove();
-                    this.score = this.score - 2;
-                    if (this.score < 1) {
-                        this.score = 0;
-                    }
-                    this.textfield.innerHTML = "Score: " + this.score;
-                }
             }
         }
         for (var _d = 0, _e = this.cookies; _d < _e.length; _d++) {
@@ -178,21 +210,6 @@ var Game = (function () {
                     }
                     this.textfield.innerHTML = "Score: " + this.score;
                 }
-            }
-        }
-        for (var _h = 0, _j = this.upgrades; _h < _j.length; _h++) {
-            var upgrade = _j[_h];
-            upgrade.update();
-            if (Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect())) {
-                this.player.notifyAllObservers();
-                var c = this.upgrades[0];
-                var i = this.upgrades.indexOf(c);
-                this.upgrades.splice(i, 1);
-                upgrade.element.remove();
-                this.player.setBehavior(new DefenseBehavior(this.player));
-                setTimeout(function () {
-                    _this.player.setBehavior(new NormalBehavior(_this.player));
-                }, 5000);
             }
         }
         if (this.addEnemy) {

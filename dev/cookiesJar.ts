@@ -2,10 +2,10 @@
 /// <reference path="./powerup.ts" />
 
 
-class CookiesAndMilk extends Powerup {
+class CookiesJar extends Powerup {
 
     constructor() {
-        super("cookiesandmilk")
+        super("cookiesjar")
     }
-    
+
 }

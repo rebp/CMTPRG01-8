@@ -7,7 +7,7 @@ class Game {
     private addEnemy: boolean = true
     private player: Player
 
-    private upgrades: CookiesAndMilk[] = []
+    private powerups: Powerup[] = []
 
     private statusbar:HTMLElement
     private textfield:HTMLElement
@@ -29,13 +29,23 @@ class Game {
 
         this.cookies.push(new Cookie())
         
-        setInterval( () => {
+        // setInterval( () => {
 
-            if (this.upgrades.length == 0) {
-                this.upgrades.push(new CookiesAndMilk())
-            }
+        //     if (this.upgrades.length == 0) {
+        //         this.upgrades.push(new CookiesAndMilk())
+        //     }
             
-        }, 10000 )
+        // }, 10000 )
+
+        setInterval( () => {
+            if( this.powerups.length == 0 ) {
+                if( Math.random() <= 0.5 ) {
+                    this.powerups.push(new CookiesJar())
+                } else {
+                    this.powerups.push(new CookiesAndMilk())
+                }
+            }
+        }, 3000 )
 
 
         this.gameLoop()
@@ -50,6 +60,43 @@ class Game {
 
     gameLoop() {
 
+        for( const powerup of this.powerups ) {
+
+            if(powerup instanceof CookiesAndMilk) {
+                if( Util.checkCollision(powerup.getBoundingClientRect(), this.player.getBoundingClientRect()) ) {
+                    this.player.notifyAllObservers()
+    
+                    let c = this.powerups[0]
+                    let i = this.powerups.indexOf(c)
+                    this.powerups.splice(i, 1)
+                    powerup.element.remove()
+    
+                    this.player.setBehavior(new DefenseBehavior(this.player))
+    
+                    setTimeout(() => { 
+                        this.player.setBehavior(new NormalBehavior(this.player))
+                    }, 5000)
+    
+                }
+            }
+
+            if(powerup instanceof CookiesJar) {
+                if( Util.checkCollision(powerup.getBoundingClientRect(), this.player.getBoundingClientRect()) ) {
+
+                    let c = this.powerups[0]
+                    let i = this.powerups.indexOf(c)
+                    this.powerups.splice(i, 1)
+                    powerup.element.remove()
+
+                    this.score = this.score + 3
+                    this.textfield.innerHTML = "Score: " + this.score     
+                }
+            }
+
+            powerup.update()
+        }
+
+
         for(const enemy of this.enemies ) {
             enemy.update()
 
@@ -57,23 +104,23 @@ class Game {
                 this.player.collision()
             }
 
-            for(const upgrade of this.upgrades) {
+            // for(const upgrade of this.upgrades) {
 
-                if( Util.checkCollision(upgrade.getBoundingClientRect(), enemy.getBoundingClientRect()) ) {
-                    let c = this.upgrades[0]
-                    let i = this.upgrades.indexOf(c)
-                    this.upgrades.splice(i, 1)
-                    upgrade.element.remove()
+            //     if( Util.checkCollision(upgrade.getBoundingClientRect(), enemy.getBoundingClientRect()) ) {
+            //         let c = this.upgrades[0]
+            //         let i = this.upgrades.indexOf(c)
+            //         this.upgrades.splice(i, 1)
+            //         upgrade.element.remove()
 
-                    this.score = this.score - 2
-                    if(this.score < 1) {
-                        this.score = 0
-                    }                    
-                    this.textfield.innerHTML = "Score: " + this.score 
+            //         this.score = this.score - 2
+            //         if(this.score < 1) {
+            //             this.score = 0
+            //         }                    
+            //         this.textfield.innerHTML = "Score: " + this.score 
 
-                }
+            //     }
 
-            }
+            // }
         }
 
         for (const cookie of this.cookies) {
@@ -108,27 +155,27 @@ class Game {
 
         }
 
-        for(const upgrade of this.upgrades) {
+        // for(const upgrade of this.upgrades) {
 
-            upgrade.update()
+        //     upgrade.update()
 
-            if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
+        //     if( Util.checkCollision(this.player.getBoundingClientRect(), upgrade.getBoundingClientRect()) ) {
 
-                this.player.notifyAllObservers()
+        //         this.player.notifyAllObservers()
 
-                let c = this.upgrades[0]
-                let i = this.upgrades.indexOf(c)
-                this.upgrades.splice(i, 1)
-                upgrade.element.remove()
+        //         let c = this.upgrades[0]
+        //         let i = this.upgrades.indexOf(c)
+        //         this.upgrades.splice(i, 1)
+        //         upgrade.element.remove()
 
-                this.player.setBehavior(new DefenseBehavior(this.player))
+        //         this.player.setBehavior(new DefenseBehavior(this.player))
 
-                setTimeout(() => { 
-                    this.player.setBehavior(new NormalBehavior(this.player))
-                }, 5000)
-            }
+        //         setTimeout(() => { 
+        //             this.player.setBehavior(new NormalBehavior(this.player))
+        //         }, 5000)
+        //     }
             
-        }
+        // }
 
         if(this.addEnemy) {
             if (this.score == 10) {
@@ -181,7 +228,7 @@ class Game {
     public getScore():number {
         return this.score
     }
-    
+
 
 }
 
